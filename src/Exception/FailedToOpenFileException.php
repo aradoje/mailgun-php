@@ -20,7 +20,7 @@ final class FailedToOpenFileException extends \Exception implements Exception
 {
     public static function create(): self
     {
-        return new self("Unable to open file.");
+        return new self('Unable to open file.');
     }
 
     public static function createWithMessage(string $message): self

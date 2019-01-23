@@ -58,16 +58,14 @@ class BatchMessage extends MessageBuilder
     }
 
     /**
-     * @param string $headerName
-     * @param string $address
      * @param array $variables {
+     *
      *     @var string $id
      *     @var string $full_name
      *     @var string $first
      *     @var string $last
      * }
      *
-     * @return MessageBuilder
      * @throws MissingRequiredParameter
      * @throws TooManyRecipients
      * @throws FailedToOpenFileException

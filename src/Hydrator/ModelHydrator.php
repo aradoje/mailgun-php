@@ -23,8 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 final class ModelHydrator implements Hydrator
 {
     /**
-     * @param ResponseInterface $response
-     * @param string $class
      * @return ResponseInterface
      */
     public function hydrate(ResponseInterface $response, string $class)
@@ -33,7 +31,7 @@ final class ModelHydrator implements Hydrator
         $contentType = $response->getHeaderLine('Content-Type');
 
         if (0 !== strpos($contentType, 'application/json') && 0 !== strpos($contentType, 'application/octet-stream')) {
-            throw new HydrationException('The ModelHydrator cannot hydrate response with Content-Type: ' . $contentType);
+            throw new HydrationException('The ModelHydrator cannot hydrate response with Content-Type: '.$contentType);
         }
 
         $data = json_decode($body, true);

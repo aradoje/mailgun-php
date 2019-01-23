@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Mailgun\Hydrator;
 
-use Mailgun\Exception\HydrationException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -19,9 +18,5 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface Hydrator
 {
-    /**
-     * @param ResponseInterface $response
-     * @param string $class
-     */
     public function hydrate(ResponseInterface $response, string $class);
 }
