@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Mailgun\Message;
 
 use Mailgun\Api\Message;
+use Mailgun\Exception\FailedToOpenFileException;
 use Mailgun\Message\Exceptions\MissingRequiredParameter;
 use Mailgun\Message\Exceptions\RuntimeException;
 use Mailgun\Message\Exceptions\TooManyRecipients;
@@ -57,16 +58,19 @@ class BatchMessage extends MessageBuilder
     }
 
     /**
+     * @param string $headerName
+     * @param string $address
      * @param array $variables {
-     *
      *     @var string $id
      *     @var string $full_name
      *     @var string $first
      *     @var string $last
      * }
      *
+     * @return MessageBuilder
      * @throws MissingRequiredParameter
      * @throws TooManyRecipients
+     * @throws FailedToOpenFileException
      */
     protected function addRecipient(string $headerName, string $address, array $variables): MessageBuilder
     {
@@ -93,6 +97,7 @@ class BatchMessage extends MessageBuilder
     /**
      * @throws RuntimeException
      * @throws MissingRequiredParameter
+     * @throws FailedToOpenFileException
      */
     public function finalize(): void
     {

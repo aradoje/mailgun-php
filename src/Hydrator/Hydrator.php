@@ -20,7 +20,8 @@ use Psr\Http\Message\ResponseInterface;
 interface Hydrator
 {
     /**
-     * @throws HydrationException
+     * @param ResponseInterface $response
+     * @param string $class
      */
     public function hydrate(ResponseInterface $response, string $class);
 }

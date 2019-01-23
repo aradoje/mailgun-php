@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Mailgun\Api;
 
 use Mailgun\Assert;
+use Mailgun\Exception\FailedToOpenFileException;
 use Mailgun\Exception\InvalidArgumentException;
 use Mailgun\Message\BatchMessage;
 use Mailgun\Model\Message\SendResponse;
@@ -29,7 +30,10 @@ class Message extends HttpApi
     }
 
     /**
+     * @param string $domain
+     * @param array $params
      * @return SendResponse|ResponseInterface
+     * @throws FailedToOpenFileException
      */
     public function send(string $domain, array $params)
     {
@@ -64,6 +68,7 @@ class Message extends HttpApi
      * @param string $message    Message filepath or content
      *
      * @return SendResponse|ResponseInterface
+     * @throws \Exception
      */
     public function sendMime(string $domain, array $recipients, string  $message, array $params)
     {
@@ -94,9 +99,11 @@ class Message extends HttpApi
     /**
      * Get stored message.
      *
+     * @param string $url
      * @param bool $rawMessage if true we will use "Accept: message/rfc2822" header
      *
      * @return ShowResponse|ResponseInterface
+     * @throws \Exception
      */
     public function show(string $url, bool $rawMessage = false)
     {
@@ -113,17 +120,23 @@ class Message extends HttpApi
     }
 
     /**
+     * @param string $fieldName
      * @param array $filePath array('fileContent' => 'content') or array('filePath' => '/foo/bar')
      *
-     * @throws InvalidArgumentException
+     * @return array
+     * @throws FailedToOpenFileException
      */
     private function prepareFile(string $fieldName, array $filePath): array
     {
-        $filename = isset($filePath['filename']) ? $filePath['filename'] : null;
+        $filename = $filePath['filename'] ?? null;
 
         if (isset($filePath['fileContent'])) {
             // File from memory
             $resource = fopen('php://temp', 'r+');
+            if (false === $resource) {
+                throw FailedToOpenFileException::createWithMessage('Unable to open php://temp for reading.');
+            }
+
             fwrite($resource, $filePath['fileContent']);
             rewind($resource);
         } elseif (isset($filePath['filePath'])) {
@@ -155,7 +168,7 @@ class Message extends HttpApi
         $postDataMultipart = [];
         foreach ($params as $key => $value) {
             // If $value is not an array we cast it to an array
-            foreach ((array) $value as $subValue) {
+            foreach ((array)$value as $subValue) {
                 $postDataMultipart[] = [
                     'name' => $key,
                     'content' => $subValue,
